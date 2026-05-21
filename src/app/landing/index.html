@@ -1,0 +1,80 @@
+<section class="landing">
+	<main class="hero">
+		<div class="hero__content">
+			<span class="badge">Arrecadacao para Formatura</span>
+
+			<h1 class="hero__title">
+				Um PDV escolar divertido, rapido e feito para toda a turma
+			</h1>
+
+			<p class="hero__subtitle">
+				Venda lanches, brindes e produtos da escola com uma experiencia simples e segura.
+				O valor arrecadado vai direto para ajudar na formatura da galera.
+			</p>
+
+			<div class="features" aria-label="Diferenciais do sistema">
+				<article class="feature">
+					<h2 class="feature__title">Facil para criancas</h2>
+					<p class="feature__text">Interface clara com fluxo de compra intuitivo.</p>
+				</article>
+
+				<article class="feature">
+					<h2 class="feature__title">Controle de vendas</h2>
+					<p class="feature__text">Registre pedidos e acompanhe o total vendido.</p>
+				</article>
+
+				<article class="feature">
+					<h2 class="feature__title">Objetivo solidario</h2>
+					<p class="feature__text">Cada venda contribui com a festa de formatura.</p>
+				</article>
+			</div>
+
+			<div class="hero__actions">
+				<a class="cta cta--primary" [routerLink]="['/auth']">Entrar no aplicativo</a>
+			</div>
+			<p class="hero__hint">Rapido, pratico e confiavel para toda a escola.</p>
+		</div>
+
+		<aside class="hero__panel" aria-label="Exemplo de tela de venda">
+			<header class="panel__head">
+				<div class="dots" aria-hidden="true">
+					<span class="dot dot--danger"></span>
+					<span class="dot dot--warning"></span>
+					<span class="dot dot--success"></span>
+				</div>
+				<span>PDV ESCOLAR</span>
+			</header>
+
+			<div class="panel__content">
+				<article class="product">
+					<div>
+						<p class="product__name">Combo Pipoca + Suco</p>
+						<p class="product__meta">Turma 5o ano</p>
+					</div>
+					<span class="price">R$ 8,00</span>
+				</article>
+
+				<article class="product">
+					<div>
+						<p class="product__name">Camiseta da Formatura</p>
+						<p class="product__meta">Produto oficial</p>
+					</div>
+					<span class="price">R$ 35,00</span>
+				</article>
+
+				<article class="product">
+					<div>
+						<p class="product__name">Cartela de Rifas</p>
+						<p class="product__meta">Premio surpresa</p>
+					</div>
+					<span class="price">R$ 5,00</span>
+				</article>
+
+				<footer class="panel__total">
+					<span>Total da campanha</span>
+					<span class="total__value">R$ 48,00</span>
+				</footer>
+			</div>
+		</aside>
+	</main>
+</section>
