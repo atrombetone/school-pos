@@ -1,0 +1,57 @@
+<mat-accordion class="sale-accordion">
+  <mat-expansion-panel class="sale-card" hideToggle>
+    <mat-expansion-panel-header>
+      <div class="sale-card__header">
+        <div class="sale-card__header-field">
+          <p>Data/Hora</p>
+          <strong>{{ sale.createdAt.toDate() | date: 'dd/MM/yyyy HH:mm' }}</strong>
+        </div>
+
+        <div class="sale-card__header-field">
+          <p>Usuário</p>
+          <strong>{{ sale.userName }}</strong>
+        </div>
+
+        <div class="sale-card__header-field">
+          <p>Pagamento</p>
+          <mat-chip-set>
+            <mat-chip class="payment-chip">{{ paymentLabel(sale.paymentMethod) }}</mat-chip>
+          </mat-chip-set>
+        </div>
+
+        <div class="sale-card__header-field sale-card__header-field--amount">
+          <p>Valor pago</p>
+          <strong>{{ sale.totalPaid | currency: 'BRL' : 'symbol' : '1.2-2' }}</strong>
+        </div>
+      </div>
+    </mat-expansion-panel-header>
+
+    <div class="sale-card__items">
+      <table aria-label="Itens da venda">
+        <thead>
+          <tr>
+            <th>Produto</th>
+            <th>Qtd</th>
+            <th>Unitário</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of sale.items; track trackByItem($index, item)) {
+            <tr>
+              <td>{{ item.productTitle }}</td>
+              <td>{{ item.quantity | number: '1.0-0' }}</td>
+              <td>{{ item.unitPrice | currency: 'BRL' : 'symbol' : '1.2-2' }}</td>
+              <td>{{ itemTotal(item) | currency: 'BRL' : 'symbol' : '1.2-2' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <footer class="sale-card__footer">
+      <span><mat-icon>inventory_2</mat-icon> {{ totalItems() }} itens</span>
+      <span><mat-icon>payments</mat-icon> {{ sale.totalPaid | currency: 'BRL' : 'symbol' : '1.2-2' }}</span>
+    </footer>
+  </mat-expansion-panel>
+</mat-accordion>

@@ -1,0 +1,66 @@
+<section class="sales-page">
+  <header class="sales-page__header">
+    <div>
+      <p class="kicker">RELATÓRIO DE VENDAS</p>
+      <h1>Vendas</h1>
+      <p class="subtitle">Consulte vendas realizadas no sistema</p>
+    </div>
+
+    <a mat-raised-button color="primary" [routerLink]="['/home/sales']">
+      <mat-icon>add_shopping_cart</mat-icon>
+      Nova Venda
+    </a>
+  </header>
+
+  @if (errorMessage()) {
+    <div class="feedback feedback--error">{{ errorMessage() }}</div>
+  }
+
+  <mat-card class="filters-card" appearance="outlined">
+    <app-sales-filters
+      [form]="filtersForm"
+      [users]="users()"
+      (apply)="onApplyFilters()"
+      (clear)="onClearFilters()"
+    />
+  </mat-card>
+
+  @if (loading()) {
+    <div class="sales-skeleton" aria-label="Carregando vendas">
+      @for (_ of [1, 2, 3]; track $index) {
+        <article class="skeleton-card">
+          <div class="skeleton-line skeleton-line--title"></div>
+          <div class="skeleton-line skeleton-line--meta"></div>
+          <div class="skeleton-table">
+            @for (__ of [1, 2, 3]; track $index) {
+              <div class="skeleton-row"></div>
+            }
+          </div>
+        </article>
+      }
+    </div>
+  } @else if (sales().length === 0) {
+    <mat-card class="empty-state" appearance="outlined">
+      <mat-icon>receipt_long</mat-icon>
+      <h2>Nenhuma venda encontrada</h2>
+      <p>Altere os filtros ou registre novas vendas para visualizar os resultados aqui.</p>
+    </mat-card>
+  } @else {
+    <div class="sales-list">
+      @for (sale of sales(); track trackBySale($index, sale)) {
+        <app-sale-card [sale]="sale" />
+      }
+    </div>
+
+    <mat-card class="pagination-card" appearance="outlined">
+      <mat-paginator
+        [length]="totalSales()"
+        [pageIndex]="pageIndex()"
+        [pageSize]="pageSize()"
+        [pageSizeOptions]="[6, 12, 24]"
+        (page)="onPageChange($event)"
+        aria-label="Paginação de vendas"
+      ></mat-paginator>
+    </mat-card>
+  }
+</section>

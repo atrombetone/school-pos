@@ -1,0 +1,39 @@
+:host {
+  display: block;
+}
+
+.filters-grid {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.filters-grid__row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.filters-grid mat-form-field {
+  width: 100%;
+}
+
+.filters-grid__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 860px) {
+  .filters-grid__row {
+    grid-template-columns: 1fr;
+  }
+
+  .filters-grid__actions {
+    justify-content: stretch;
+  }
+
+  .filters-grid__actions button {
+    flex: 1 1 0;
+  }
+}

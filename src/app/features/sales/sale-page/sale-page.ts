@@ -23,6 +23,7 @@ import {
   serverTimestamp,
 } from 'firebase/firestore';
 import { CashRegister, productItem } from '../../../shared/models/cash-register.model';
+import { environment } from '../../../../environments/environment';
 
 type PaymentMethod = 'cash' | 'pix';
 
@@ -333,7 +334,10 @@ export class SalePage implements OnInit {
       };
 
       await runTransaction(this.firestore, async transaction => {
-        for (const cartItem of this.cartItems()) {
+        const cartItems = this.cartItems();
+        const stockUpdates: Array<{ productRef: ReturnType<typeof doc>; nextStock: number }> = [];
+
+        for (const cartItem of cartItems) {
           const productRef = doc(productCollectionRef, cartItem.id);
           const productSnapshot = await transaction.get(productRef);
 
@@ -346,8 +350,15 @@ export class SalePage implements OnInit {
             throw new Error('INSUFFICIENT_STOCK');
           }
 
-          transaction.update(productRef, {
-            stock: currentStock - cartItem.quantity,
+          stockUpdates.push({
+            productRef,
+            nextStock: currentStock - cartItem.quantity,
+          });
+        }
+
+        for (const update of stockUpdates) {
+          transaction.update(update.productRef, {
+            stock: update.nextStock,
             updatedAt: serverTimestamp(),
           });
         }
@@ -367,6 +378,17 @@ export class SalePage implements OnInit {
       this.snackBar.open('Venda registrada com sucesso.', 'Fechar', { duration: 3000 });
     } catch (error) {
       const code = error instanceof Error ? error.message : '';
+
+      if (!environment.production) {
+        console.error('[SalePage] Error while saving sale transaction', {
+          code,
+          error,
+          cartItems: this.cartItems(),
+          total: this.cartTotal(),
+          paymentMethod: this.paymentForm.controls.paymentMethod.value,
+          cashReceived: this.getCashReceivedAmount(),
+        });
+      }
 
       if (code === 'INSUFFICIENT_STOCK') {
         this.errorMessage.set('Stock insuficiente para concluir a venda. Atualize e tente novamente.');

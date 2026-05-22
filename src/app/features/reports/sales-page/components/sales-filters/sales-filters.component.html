@@ -1,0 +1,49 @@
+<form class="filters-grid" [formGroup]="form" novalidate>
+  <div class="filters-grid__row">
+    <mat-form-field appearance="outline">
+      <mat-label>Data inicial</mat-label>
+      <input matInput [matDatepicker]="startPicker" formControlName="startDate" />
+      <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
+      <mat-datepicker #startPicker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Data final</mat-label>
+      <input matInput [matDatepicker]="endPicker" formControlName="endDate" />
+      <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
+      <mat-datepicker #endPicker></mat-datepicker>
+    </mat-form-field>
+  </div>
+
+  <div class="filters-grid__row">
+    <mat-form-field appearance="outline">
+      <mat-label>Categoria</mat-label>
+      <mat-select formControlName="category">
+        @for (category of categories; track category.value) {
+          <mat-option [value]="category.value">{{ category.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Usuário</mat-label>
+      <input type="text" matInput formControlName="userName" [matAutocomplete]="userAuto" placeholder="Pesquisar usuário" />
+      <mat-autocomplete #userAuto="matAutocomplete">
+        @for (user of filteredUsers(); track user) {
+          <mat-option [value]="user">{{ user }}</mat-option>
+        }
+      </mat-autocomplete>
+    </mat-form-field>
+  </div>
+
+  <div class="filters-grid__actions">
+    <button mat-stroked-button type="button" (click)="clear.emit()">
+      <mat-icon>restart_alt</mat-icon>
+      Limpar filtros
+    </button>
+    <button mat-raised-button color="primary" type="button" (click)="apply.emit()">
+      <mat-icon>filter_alt</mat-icon>
+      Filtrar
+    </button>
+  </div>
+</form>
