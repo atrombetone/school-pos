@@ -92,10 +92,18 @@ export class DashboardPage implements OnInit {
   }
 
   private async loadSalesFromToday(): Promise<Array<Record<string, unknown>>> {
-    const salesRef = collection(this.firestore, 'sales');
     const startOfDay = this.startOfToday();
     const startOfTomorrow = new Date(startOfDay);
     startOfTomorrow.setDate(startOfTomorrow.getDate() + 1);
+
+    return this.loadSalesFromCollectionToday(startOfDay, startOfTomorrow);
+  }
+
+  private async loadSalesFromCollectionToday(
+    startOfDay: Date,
+    startOfTomorrow: Date,
+  ): Promise<Array<Record<string, unknown>>> {
+    const salesRef = collection(this.firestore, 'cashRegisters');
 
     try {
       const dailyQuery = query(
@@ -112,11 +120,15 @@ export class DashboardPage implements OnInit {
       return snapshot.docs
         .map(docSnapshot => ({ id: docSnapshot.id, ...docSnapshot.data() }) as Record<string, unknown>)
         .filter(sale => {
-          const createdAt = this.extractDate(sale['createdAt'] ?? sale['date'] ?? sale['timestamp']);
+          const createdAt = this.extractSaleDate(sale);
 
           return createdAt >= startOfDay && createdAt < startOfTomorrow;
         });
     }
+  }
+
+  private extractSaleDate(sale: Record<string, unknown>): Date {
+    return this.extractDate(sale['createdAt'] ?? sale['date'] ?? sale['timestamp']);
   }
 
   private async loadProducts(): Promise<ProductView[]> {
@@ -159,6 +171,7 @@ export class DashboardPage implements OnInit {
     }
 
     const possibleOwnerFields = [
+      sale['idUser'],
       sale['sellerId'],
       sale['userId'],
       sale['createdBy'],
@@ -171,7 +184,7 @@ export class DashboardPage implements OnInit {
 
   private extractSaleTotal(sale: Record<string, unknown>): number {
     return this.toNumber(
-      sale['total'] ?? sale['totalAmount'] ?? sale['finalAmount'] ?? sale['amount'] ?? sale['value']
+      sale['ammount'] ?? sale['total'] ?? sale['totalAmount'] ?? sale['finalAmount'] ?? sale['amount'] ?? sale['value']
     );
   }
 

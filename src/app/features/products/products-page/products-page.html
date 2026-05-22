@@ -10,10 +10,10 @@
 			<mat-icon>add_circle</mat-icon>
 			Novo produto
 		</a>
-		<a mat-stroked-button [routerLink]="['/home/stock']">
-			<mat-icon>add_circle</mat-icon>
+		<button matButton="filled"  [routerLink]="['/home/stock']">
+			<mat-icon><span class="material-icons">inventory</span></mat-icon>
 			Ajustar estoque
-		</a>
+		</button>
 	</header>
 
 	@if (errorMessage()) {

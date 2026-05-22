@@ -43,6 +43,14 @@
   animation: rise-in 600ms ease-out both;
 }
 
+.hero__brand {
+  display: block;
+  width: min(100%, 420px);
+  height: auto;
+  margin-bottom: 0.9rem;
+  filter: drop-shadow(0 8px 16px color-mix(in srgb, var(--color-primary-dark) 18%, transparent));
+}
+
 .hero__title {
   margin: 1rem 0;
   font-size: clamp(2rem, 4.4vw, 3.9rem);
@@ -136,6 +144,14 @@
   color: var(--color-text-muted);
 }
 
+.panel__banner {
+  display: block;
+  width: min(100%, 260px);
+  height: auto;
+  margin: 0.65rem auto 0.15rem;
+  opacity: 0.95;
+}
+
 .dots {
   display: inline-flex;
   gap: 0.35rem;
@@ -220,7 +236,15 @@
     padding-top: 1.5rem;
   }
 
+  .hero__brand {
+    width: min(100%, 360px);
+  }
+
   .features {
     grid-template-columns: 1fr;
+  }
+
+  .panel__banner {
+    width: min(100%, 220px);
   }
 }

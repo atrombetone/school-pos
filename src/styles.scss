@@ -15,6 +15,8 @@ html {
     typography: Roboto,
     density: 0,
   ));
+
+ 
 }
 
 body {
@@ -85,6 +87,11 @@ body {
      🎯 Acessibilidade / foco
   ========================== */
   --color-focus: #3b82f6;
+
+   @include mat.button-overrides((
+    filled-container-color:#f59e0b,
+	filled-label-text-color: #000
+  ));
 }
 
 html,
