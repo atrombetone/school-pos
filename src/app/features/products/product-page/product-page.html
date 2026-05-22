@@ -1,1 +1,101 @@
-<p>product-page works!</p>
+<section class="product-page">
+	<mat-card class="product-page__card" appearance="outlined">
+		<header class="product-page__header">
+			<div>
+				<p class="kicker">{{ isEditing() ? 'EDITAR PRODUTO' : 'NOVO PRODUTO' }}</p>
+				<h1>{{ isEditing() ? 'Manutencao do produto' : 'Cadastro de produto' }}</h1>
+				<p class="subtitle">Mantenha as informacoes do produto atualizadas para o evento.</p>
+			</div>
+
+			<a mat-stroked-button routerLink="/home/products">
+				<mat-icon>arrow_back</mat-icon>
+				Voltar
+			</a>
+		</header>
+
+		@if (errorMessage()) {
+			<div class="feedback feedback--error">{{ errorMessage() }}</div>
+		}
+
+		@if (loading()) {
+			<p class="loading">Carregando produto...</p>
+		} @else {
+			<form class="product-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+				<mat-form-field appearance="outline">
+					<mat-label>Categoria</mat-label>
+					<input matInput formControlName="category" placeholder="Lanches, Bebidas, Brindes" />
+					@if (fieldInvalid('category')) {
+						<mat-error>Informe a categoria.</mat-error>
+					}
+				</mat-form-field>
+
+				<mat-form-field appearance="outline">
+					<mat-label>Titulo</mat-label>
+					<input matInput formControlName="title" placeholder="Nome do produto" />
+					@if (fieldInvalid('title')) {
+						<mat-error>Informe o titulo.</mat-error>
+					}
+				</mat-form-field>
+
+				<mat-form-field appearance="outline" class="field-full">
+					<mat-label>Descricao</mat-label>
+					<textarea matInput rows="4" formControlName="description"></textarea>
+				</mat-form-field>
+
+				<mat-form-field appearance="outline">
+					<mat-label>Unidade</mat-label>
+					<mat-select formControlName="unit">
+						@for (unit of units; track unit) {
+							<mat-option [value]="unit">{{ unit }}</mat-option>
+						}
+					</mat-select>
+				</mat-form-field>
+
+				<mat-form-field appearance="outline">
+					<mat-label>Preco</mat-label>
+					<input matInput type="number" min="0.01" step="0.01" formControlName="price" />
+					@if (fieldInvalid('price')) {
+						<mat-error>Informe um preco valido.</mat-error>
+					}
+				</mat-form-field>
+
+				<mat-form-field appearance="outline">
+					<mat-label>Stock</mat-label>
+					<input matInput type="number" formControlName="stock" readonly />
+				</mat-form-field>
+
+				<label class="image-uploader field-full">
+					<span>Imagem do produto</span>
+					<input type="file" accept="image/*" (change)="onImageSelected($event)" />
+
+					@if (imagePreviewUrl()) {
+						<img [src]="imagePreviewUrl()!" alt="Preview da imagem do produto" />
+					} @else {
+						<div class="image-placeholder">
+							<mat-icon>image</mat-icon>
+							<span>Sem imagem</span>
+						</div>
+					}
+				</label>
+
+				<mat-slide-toggle class="field-full" formControlName="active">Produto ativo</mat-slide-toggle>
+
+				<div class="actions field-full">
+					<button mat-raised-button color="primary" type="submit" [disabled]="saving() || uploading()">
+						<mat-icon>{{ isEditing() ? 'save' : 'add_box' }}</mat-icon>
+						{{ isEditing() ? 'Salvar alteracoes' : 'Salvar produto' }}
+					</button>
+
+					<button mat-stroked-button type="button" (click)="cancel()">Cancelar</button>
+
+					@if (isEditing()) {
+						<button mat-stroked-button color="warn" type="button" (click)="deleteCurrentProduct()">
+							<mat-icon>delete</mat-icon>
+							Excluir
+						</button>
+					}
+				</div>
+			</form>
+		}
+	</mat-card>
+</section>

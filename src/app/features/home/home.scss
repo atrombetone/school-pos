@@ -1,0 +1,127 @@
+:host {
+	display: block;
+	height: 100dvh;
+}
+
+.home-layout {
+	height: 100dvh;
+	display: grid;
+	grid-template-rows: auto 1fr;
+	background: var(--color-background);
+}
+
+.topbar {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 1rem;
+	padding: 0.7rem 1rem;
+	border-bottom: 1px solid var(--color-border);
+	background: var(--color-surface);
+}
+
+.topbar__left,
+.topbar__right {
+	display: flex;
+	align-items: center;
+	gap: 0.85rem;
+	min-width: 0;
+}
+
+.brand {
+	display: inline-flex;
+	align-items: center;
+	text-decoration: none;
+}
+
+.brand__logo {
+	display: block;
+	object-fit: contain;
+}
+
+.brand__logo--desktop {
+	height: 42px;
+}
+
+.brand__logo--mobile {
+	display: none;
+	height: 34px;
+}
+
+.nav-desktop {
+	display: flex;
+	gap: 0.45rem;
+}
+
+.nav-desktop a {
+	text-decoration: none;
+	color: var(--color-text-secondary);
+	font-weight: 700;
+	padding: 0.5rem 0.72rem;
+	border-radius: 10px;
+	border: 1px solid transparent;
+}
+
+.nav-desktop a:hover,
+.nav-desktop a.is-active {
+	color: var(--color-primary-dark);
+	border-color: color-mix(in srgb, var(--color-primary-light) 35%, var(--color-border));
+	background: color-mix(in srgb, var(--color-primary-light) 10%, #fff);
+}
+
+.user-email {
+	margin: 0;
+	color: var(--color-text-secondary);
+	font-weight: 700;
+	max-width: 220px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.logout-btn {
+	border: 0;
+	border-radius: 10px;
+	background: color-mix(in srgb, var(--color-danger-light) 18%, #fff);
+	color: var(--color-danger-dark);
+	font: inherit;
+	font-weight: 800;
+	padding: 0.5rem 0.8rem;
+	cursor: pointer;
+}
+
+.menu-btn {
+	display: none;
+	min-width: auto;
+	line-height: 1;
+	padding: 0.4rem 0.55rem;
+	border-radius: 10px;
+	border: 1px solid var(--color-border);
+}
+
+.home-content {
+	min-height: 0;
+	overflow: hidden;
+}
+
+@media (max-width: 900px) {
+	.brand__logo--desktop {
+		display: none;
+	}
+
+	.brand__logo--mobile {
+		display: block;
+	}
+
+	.nav-desktop,
+	.user-email,
+	.logout-btn {
+		display: none;
+	}
+
+	.menu-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+	}
+}

@@ -1,0 +1,80 @@
+<section class="stock-page">
+	<header class="stock-page__header">
+		<div>
+			<p class="kicker">AJUSTE DE ESTOQUE</p>
+			<h1>Atualizacao de stock por produto</h1>
+			<p class="subtitle">Informe o novo stock apenas nos itens que precisam de ajuste e clique em salvar.</p>
+		</div>
+
+		<div class="header-actions">
+			<button mat-stroked-button type="button" (click)="goBack()">
+				<mat-icon>arrow_back</mat-icon>
+				Voltar
+			</button>
+			<button mat-raised-button color="primary" type="button" (click)="save()" [disabled]="saving() || loadingProducts()">
+				<mat-icon>save</mat-icon>
+				Salvar ajustes
+			</button>
+		</div>
+	</header>
+
+	@if (errorMessage()) {
+		<div class="feedback feedback--error">{{ errorMessage() }}</div>
+	}
+
+	<mat-card class="list-card" appearance="outlined">
+		<div class="list-head">
+			<h2>Produtos para ajuste</h2>
+			<span>{{ products().length }} itens</span>
+		</div>
+
+		@if (loadingProducts()) {
+			<p class="empty">Carregando produtos...</p>
+		} @else if (products().length === 0) {
+			<p class="empty">Nenhum produto encontrado.</p>
+		} @else {
+			<div class="stock-list">
+				@for (product of products(); track trackByProduct($index, product)) {
+					<article class="stock-item" [class.inactive]="!product.active">
+						<div class="stock-item__media">
+							@if (product.imageUrl) {
+								<img [src]="product.imageUrl" [alt]="'Imagem de ' + product.title" />
+							} @else {
+								<div class="image-fallback">
+									<mat-icon>inventory_2</mat-icon>
+								</div>
+							}
+						</div>
+
+						<div class="stock-item__body">
+							<p class="category">{{ product.category || 'Sem categoria' }}</p>
+							<h3>{{ product.title }}</h3>
+							<p class="status" [class.status--inactive]="!product.active">
+								{{ product.active ? 'Produto ativo' : 'Produto inativo' }}
+							</p>
+						</div>
+
+						<div class="stock-item__fields">
+							<mat-form-field appearance="outline">
+								<mat-label>Stock atual</mat-label>
+								<input matInput type="text" [value]="product.currentStock" readonly />
+							</mat-form-field>
+
+							<mat-form-field appearance="outline">
+								<mat-label>Novo stock</mat-label>
+								<input
+									matInput
+									type="text"
+									inputmode="numeric"
+									placeholder="Digite o novo stock"
+									[value]="product.newStockInput"
+									(input)="updateNewStock(product.id, $any($event.target).value)"
+								/>
+							</mat-form-field>
+						</div>
+					</article>
+				}
+			</div>
+		}
+	</mat-card>
+</section>

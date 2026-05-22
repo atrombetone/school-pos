@@ -1,0 +1,36 @@
+<section class="home-layout">
+	<header class="topbar">
+		<div class="topbar__left">
+			<a class="brand" [routerLink]="['/home/dashboard']" aria-label="Ir para dashboard">
+				<img class="brand__logo brand__logo--desktop" src="/banner_transparente.png" alt="Logotipo" />
+				<img class="brand__logo brand__logo--mobile" src="/banner_transparente.png" alt="Logo" />
+			</a>
+
+			<nav class="nav-desktop" aria-label="Navegacao principal">
+				<a [routerLink]="['/home/dashboard']" routerLinkActive="is-active">Dashboard</a>
+				<a [routerLink]="['/home/sales']" routerLinkActive="is-active">VENDER</a>
+				<a [routerLink]="['/home/products']" routerLinkActive="is-active">Produtos</a>
+			</nav>
+		</div>
+
+		<div class="topbar__right">
+			<p class="user-email" [title]="userEmail()">{{ userEmail() }}</p>
+			<button class="logout-btn" type="button" (click)="logout()">Sair</button>
+
+			<button class="menu-btn" mat-button [matMenuTriggerFor]="mobileMenu" aria-label="Abrir menu">
+				&#9776;
+			</button>
+
+			<mat-menu #mobileMenu="matMenu">
+				<button mat-menu-item [routerLink]="['/home/dashboard']">Dashboard</button>
+				<button mat-menu-item [routerLink]="['/home/sales']">VENDER</button>
+				<button mat-menu-item [routerLink]="['/home/products']">Produtos</button>
+				<button mat-menu-item (click)="logout()">Sair</button>
+			</mat-menu>
+		</div>
+	</header>
+
+	<main class="home-content">
+		<router-outlet />
+	</main>
+</section>

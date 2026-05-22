@@ -1,1 +1,99 @@
-<p>dashboard-page works!</p>
+<section class="dashboard">
+	<header class="dashboard__header">
+		<div>
+			<p class="dashboard__kicker">PAINEL DE VENDAS</p>
+			<h1>Dashboard operacional</h1>
+			<p class="dashboard__subtitle">
+				Hoje: {{ todayLabel() | date: 'dd/MM/yyyy' }} | Operador: {{ userEmail() }}
+			</p>
+		</div>
+
+		<div class="dashboard__actions">
+			<button type="button" (click)="refresh()" [disabled]="isLoading()">Atualizar</button>
+		</div>
+	</header>
+
+	@if (errorMessage()) {
+		<div class="dashboard__error">{{ errorMessage() }}</div>
+	}
+
+	<section class="dashboard__cards" aria-label="Indicadores do dia">
+		<article class="card">
+			<p class="card__label">Valor arrecadado hoje</p>
+			<p class="card__value">{{ totalRaisedToday() | currency: 'BRL' : 'symbol' : '1.2-2' }}</p>
+		</article>
+
+		<article class="card">
+			<p class="card__label">Total de vendas hoje</p>
+			<p class="card__value">{{ totalSalesToday() | number: '1.0-0' }}</p>
+		</article>
+
+		<article class="card">
+			<p class="card__label">Minhas vendas hoje</p>
+			<p class="card__value">{{ mySalesToday() | number: '1.0-0' }}</p>
+		</article>
+
+		<article class="card">
+			<p class="card__label">Ticket medio do dia</p>
+			<p class="card__value">{{ averageTicketToday() | currency: 'BRL' : 'symbol' : '1.2-2' }}</p>
+		</article>
+	</section>
+
+	<section class="dashboard__insights" aria-label="Alertas de estoque">
+		<article class="insight">
+			<h2>Produtos com alerta</h2>
+			<p>
+				{{ lowStockCount() }} itens estao com estoque baixo ou zerado e podem impactar as vendas.
+			</p>
+		</article>
+	</section>
+
+	<section class="dashboard__table-wrap" aria-label="Estoque de produtos">
+		<div class="table-head">
+			<h2>Produtos e estoque</h2>
+			<span>{{ products().length }} itens</span>
+		</div>
+
+		@if (isLoading()) {
+			<p class="dashboard__loading">Carregando dados...</p>
+		} @else if (products().length === 0) {
+			<p class="dashboard__loading">Nenhum produto encontrado no Firestore.</p>
+		} @else {
+			<table>
+				<thead>
+					<tr>
+						<th>Produto</th>
+						<th>Estoque</th>
+						<th>Preco</th>
+						<th>Status</th>
+					</tr>
+				</thead>
+				<tbody>
+					@for (product of products(); track trackByProduct($index, product)) {
+						<tr>
+							<td>{{ product.name }}</td>
+							<td>{{ product.stock | number: '1.0-0' }}</td>
+							<td>{{ product.price | currency: 'BRL' : 'symbol' : '1.2-2' }}</td>
+							<td>
+								<span
+									class="status"
+									[class.status--ok]="product.status === 'ok'"
+									[class.status--low]="product.status === 'low'"
+									[class.status--empty]="product.status === 'empty'"
+								>
+									@if (product.status === 'ok') {
+										Normal
+									} @else if (product.status === 'low') {
+										Baixo
+									} @else {
+										Zerado
+									}
+								</span>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		}
+	</section>
+</section>

@@ -1,0 +1,169 @@
+:host {
+	display: block;
+	min-height: 100vh;
+	color: var(--color-text);
+}
+
+.create-account {
+	min-height: 100vh;
+	padding: 2rem 1rem;
+	background:
+		radial-gradient(circle at top left, color-mix(in srgb, var(--color-warning-light) 28%, transparent), transparent 28%),
+		radial-gradient(circle at bottom right, color-mix(in srgb, var(--color-success-light) 24%, transparent), transparent 26%),
+		linear-gradient(160deg, #ffffff, var(--color-background));
+}
+
+.create-account__shell {
+	max-width: 1120px;
+	margin: 0 auto;
+	min-height: calc(100vh - 4rem);
+	display: grid;
+	grid-template-columns: 0.95fr 1.05fr;
+	gap: 1.5rem;
+	align-items: center;
+}
+
+.create-account__intro,
+.create-account__form {
+	background: var(--color-surface);
+	border: 1px solid var(--color-border);
+	border-radius: 24px;
+	padding: 1.5rem;
+	box-shadow: 0 16px 32px color-mix(in srgb, var(--color-primary-dark) 10%, transparent);
+}
+
+.badge {
+	display: inline-block;
+	border-radius: 999px;
+	padding: 0.35rem 0.8rem;
+	background: color-mix(in srgb, var(--color-primary-light) 14%, #ffffff);
+	color: var(--color-primary-dark);
+	font-weight: 800;
+	font-size: 0.85rem;
+}
+
+.create-account__intro h1,
+.form-header h2 {
+	margin: 1rem 0 0.7rem;
+	color: var(--color-primary-dark);
+	line-height: 1.1;
+}
+
+.create-account__intro p {
+	margin: 0;
+	color: var(--color-text-secondary);
+	line-height: 1.65;
+}
+
+.approval-box,
+.message {
+	margin-top: 1rem;
+	border-radius: 16px;
+	padding: 1rem;
+}
+
+.approval-box {
+	background: color-mix(in srgb, var(--color-warning-light) 20%, #ffffff);
+	border: 1px solid color-mix(in srgb, var(--color-warning) 24%, var(--color-border));
+}
+
+.approval-box strong,
+.approval-box span {
+	color: var(--color-primary-dark);
+}
+
+.approval-box p {
+	margin: 0.4rem 0 0;
+}
+
+.create-account__form {
+	display: grid;
+	gap: 0.95rem;
+}
+
+.form-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+}
+
+.form-header h2 {
+	margin: 0;
+}
+
+.form-header a {
+	color: var(--color-primary);
+	text-decoration: none;
+	font-weight: 800;
+}
+
+.message--success {
+	background: color-mix(in srgb, var(--color-success-light) 20%, #ffffff);
+	color: var(--color-success-dark);
+}
+
+.message--error {
+	background: color-mix(in srgb, var(--color-danger-light) 16%, #ffffff);
+	color: var(--color-danger-dark);
+}
+
+.field {
+	display: grid;
+	gap: 0.4rem;
+}
+
+.field span {
+	font-weight: 800;
+	color: var(--color-text);
+}
+
+.field input {
+	width: 100%;
+	border: 1px solid var(--color-border);
+	border-radius: 14px;
+	padding: 0.9rem 1rem;
+	font: inherit;
+	color: var(--color-text);
+	background: #ffffff;
+}
+
+.field input:focus {
+	outline: 2px solid color-mix(in srgb, var(--color-focus) 36%, transparent);
+	border-color: var(--color-focus);
+}
+
+.field small {
+	color: var(--color-danger-dark);
+	font-weight: 700;
+}
+
+.submit-button {
+	margin-top: 0.3rem;
+	border: 0;
+	border-radius: 14px;
+	padding: 0.95rem 1.2rem;
+	background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
+	color: #ffffff;
+	font: inherit;
+	font-weight: 900;
+	cursor: pointer;
+}
+
+.submit-button:disabled {
+	opacity: 0.75;
+	cursor: progress;
+}
+
+.form-note {
+	margin: 0;
+	color: var(--color-text-muted);
+	font-size: 0.92rem;
+	line-height: 1.5;
+}
+
+@media (max-width: 960px) {
+	.create-account__shell {
+		grid-template-columns: 1fr;
+	}
+}

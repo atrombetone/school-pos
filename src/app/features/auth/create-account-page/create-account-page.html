@@ -1,1 +1,85 @@
-<p>create-account-page works!</p>
+<section class="create-account">
+	<div class="create-account__shell">
+		<div class="create-account__intro">
+			<span class="badge">Criacao de conta</span>
+
+			<h1>Solicite seu acesso ao PDV escolar</h1>
+
+			<p>
+				Cadastre seu email e senha para entrar no sistema. A conta sera criada, mas o login
+				so sera liberado depois da aprovacao do administrador.
+			</p>
+
+			<div class="approval-box">
+				<strong>Aprovacao obrigatoria</strong>
+				<p>Somente o administrador <span>altrombetone@gmail.com</span> pode liberar o acesso.</p>
+			</div>
+		</div>
+
+		<form class="create-account__form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+			<div class="form-header">
+				<h2>Dados da conta</h2>
+				<a routerLink="/auth">Voltar para login</a>
+			</div>
+
+			@if (successMessage()) {
+				<div class="message message--success">{{ successMessage() }}</div>
+			}
+
+			@if (errorMessage()) {
+				<div class="message message--error">{{ errorMessage() }}</div>
+			}
+
+			<label class="field">
+				<span>Nome completo</span>
+				<input type="text" formControlName="name" placeholder="Ex.: Maria Silva" />
+				@if (fieldInvalid('name')) {
+					<small>Informe ao menos 3 caracteres.</small>
+				}
+			</label>
+
+			<label class="field">
+				<span>Email</span>
+				<input type="email" formControlName="email" placeholder="voce@escola.com" />
+				@if (fieldInvalid('email')) {
+					<small>Digite um email valido.</small>
+				}
+			</label>
+
+			<label class="field">
+				<span>Senha</span>
+				<input type="password" formControlName="password" placeholder="Digite uma senha segura" />
+				@if (fieldInvalid('password')) {
+					<small>A senha precisa ter ao menos 6 caracteres.</small>
+				}
+			</label>
+
+			<label class="field">
+				<span>Confirmar senha</span>
+				<input
+					type="password"
+					formControlName="confirmPassword"
+					placeholder="Repita a senha"
+				/>
+				@if (fieldInvalid('confirmPassword')) {
+					<small>Confirme a senha para continuar.</small>
+				}
+				@if (passwordMismatch()) {
+					<small>As senhas precisam ser iguais.</small>
+				}
+			</label>
+
+			<button class="submit-button" type="submit" [disabled]="isSubmitting()">
+				@if (isSubmitting()) {
+					Criando conta...
+				} @else {
+					Criar conta
+				}
+			</button>
+
+			<p class="form-note">
+				Apos a criacao, o usuario aparece como pendente no banco e aguarda liberacao manual.
+			</p>
+		</form>
+	</div>
+</section>

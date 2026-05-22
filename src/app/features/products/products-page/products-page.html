@@ -1,1 +1,68 @@
-<p>products-page works!</p>
+<section class="products-page">
+	<header class="products-page__header">
+		<div>
+			<p class="kicker">LISTAGEM DE PRODUTOS</p>
+			<h1>Produtos cadastrados</h1>
+			<p class="subtitle">Clique em um produto para abrir a tela de manutencao.</p>
+		</div>
+
+		<a mat-stroked-button [routerLink]="['/home/products/new']">
+			<mat-icon>add_circle</mat-icon>
+			Novo produto
+		</a>
+		<a mat-stroked-button [routerLink]="['/home/stock']">
+			<mat-icon>add_circle</mat-icon>
+			Ajustar estoque
+		</a>
+	</header>
+
+	@if (errorMessage()) {
+		<div class="feedback feedback--error">{{ errorMessage() }}</div>
+	}
+
+	<mat-card class="list-card" appearance="outlined">
+		<div class="list-head">
+			<h2>Produtos cadastrados</h2>
+			<span>{{ products().length }} itens</span>
+		</div>
+
+		@if (loadingProducts()) {
+			<p class="empty">Carregando produtos...</p>
+		} @else if (products().length === 0) {
+			<p class="empty">Nenhum produto cadastrado ainda.</p>
+		} @else {
+			<div class="products-list">
+				@for (product of products(); track trackByProduct($index, product)) {
+					<a class="product-item" [routerLink]="['/home/products', product.id]">
+						<div class="product-item__media">
+							@if (product.imageUrl) {
+								<img [src]="product.imageUrl" [alt]="'Imagem de ' + product.title" />
+							} @else {
+								<div class="image-fallback">
+									<mat-icon>image</mat-icon>
+								</div>
+							}
+						</div>
+
+						<div class="product-item__body">
+							<p class="category">{{ product.category }}</p>
+							<h3>{{ product.title }}</h3>
+							<p class="description">{{ product.description || 'Sem descricao.' }}</p>
+							<div class="meta">
+								<span>{{ product.price | currency: 'BRL' : 'symbol' : '1.2-2' }}</span>
+								<span>{{ product.unit }}</span>
+								<span>Estoque: {{ product.stock ?? 0 }}</span>
+								<span [class.inactive]="!product.active">{{ product.active ? 'Ativo' : 'Inativo' }}</span>
+								<span>{{ product.updatedAt.toDate() | date: 'dd/MM/yyyy HH:mm' }}</span>
+							</div>
+						</div>
+
+						<div class="product-item__actions" aria-hidden="true">
+							<mat-icon>chevron_right</mat-icon>
+						</div>
+					</a>
+				}
+			</div>
+		}
+	</mat-card>
+</section>

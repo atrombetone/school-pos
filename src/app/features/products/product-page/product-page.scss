@@ -1,0 +1,120 @@
+:host {
+	display: block;
+	height: 100%;
+}
+
+.product-page {
+	height: 100%;
+	overflow: auto;
+	padding: 1rem;
+	background:
+		radial-gradient(circle at 12% 10%, color-mix(in srgb, var(--color-primary-light) 12%, transparent), transparent 24%),
+		radial-gradient(circle at 88% 92%, color-mix(in srgb, var(--color-success-light) 12%, transparent), transparent 24%),
+		linear-gradient(160deg, #fff, var(--color-background));
+}
+
+.product-page__card {
+	max-width: 1120px;
+	margin: 0 auto;
+	border-color: var(--color-border);
+}
+
+.product-page__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	flex-wrap: wrap;
+}
+
+.kicker {
+	margin: 0;
+	color: var(--color-primary);
+	font-size: 0.78rem;
+	font-weight: 900;
+	letter-spacing: 0.08em;
+}
+
+h1 {
+	margin: 0.3rem 0;
+	color: var(--color-primary-dark);
+}
+
+.subtitle {
+	margin: 0;
+	color: var(--color-text-secondary);
+}
+
+.feedback {
+	margin-top: 0.8rem;
+	border-radius: 12px;
+	padding: 0.75rem 0.9rem;
+	font-weight: 700;
+}
+
+.feedback--error {
+	color: var(--color-danger-dark);
+	background: color-mix(in srgb, var(--color-danger-light) 18%, #fff);
+}
+
+.loading {
+	margin: 1rem 0 0;
+	color: var(--color-text-muted);
+}
+
+.product-form {
+	margin-top: 1rem;
+	display: grid;
+	gap: 0.75rem;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.field-full {
+	grid-column: 1 / -1;
+}
+
+.image-uploader {
+	display: grid;
+	gap: 0.45rem;
+}
+
+.image-uploader span {
+	font-weight: 700;
+	color: var(--color-text-secondary);
+}
+
+.image-uploader input {
+	border: 1px solid var(--color-border);
+	border-radius: 10px;
+	padding: 0.55rem;
+	background: #fff;
+}
+
+.image-uploader img,
+.image-placeholder {
+	width: min(100%, 220px);
+	aspect-ratio: 1;
+	border-radius: 14px;
+	object-fit: cover;
+	border: 1px solid var(--color-border);
+}
+
+.image-placeholder {
+	display: grid;
+	place-items: center;
+	gap: 0.25rem;
+	color: var(--color-text-muted);
+	background: #fff;
+}
+
+.actions {
+	display: flex;
+	gap: 0.6rem;
+	flex-wrap: wrap;
+}
+
+@media (max-width: 720px) {
+	.product-form {
+		grid-template-columns: 1fr;
+	}
+}

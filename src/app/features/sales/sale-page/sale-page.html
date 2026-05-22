@@ -1,1 +1,181 @@
-<p>sale-page works!</p>
+<section class="sale-page">
+	<header class="sale-page__header">
+		<div>
+			<p class="kicker">REGISTRO DE VENDAS</p>
+			<h1>Vendas de produtos no evento</h1>
+			<p class="subtitle">Selecione os produtos, monte o carrinho e finalize o pagamento rapidamente.</p>
+		</div>
+	</header>
+
+	@if (errorMessage()) {
+		<div class="feedback feedback--error">{{ errorMessage() }}</div>
+	}
+
+	<div class="sale-grid">
+		<mat-card class="products-card" appearance="outlined">
+			<div class="card-head">
+				<h2>Produtos</h2>
+				<mat-form-field appearance="outline" class="category-field">
+					<mat-label>Categoria</mat-label>
+					<mat-select [value]="selectedCategory()" (valueChange)="setCategory($event)">
+						@for (category of categories(); track category) {
+							<mat-option [value]="category">
+								{{ category === 'all' ? 'Todas' : category }}
+							</mat-option>
+						}
+					</mat-select>
+				</mat-form-field>
+			</div>
+
+			@if (loadingProducts()) {
+				<p class="empty">Carregando produtos...</p>
+			} @else if (filteredProducts().length === 0) {
+				<p class="empty">Nenhum produto encontrado para esta categoria.</p>
+			} @else {
+				<div class="products-list">
+					@for (product of filteredProducts(); track trackByProduct($index, product)) {
+						<article class="product-item" [class.inactive]="!product.active || product.stock <= 0">
+							<div class="product-item__media">
+								@if (product.imageUrl) {
+									<img [src]="product.imageUrl" [alt]="'Imagem de ' + product.title" />
+								} @else {
+									<div class="image-fallback">
+										<mat-icon>inventory_2</mat-icon>
+									</div>
+								}
+							</div>
+
+							<div class="product-item__body">
+								<p class="category">{{ product.category }}</p>
+								<h3>{{ product.title }}</h3>
+								<div class="meta">
+									<span>{{ product.price | currency: 'BRL' : 'symbol' : '1.2-2' }}</span>
+									<span>Stock: {{ product.stock }}</span>
+								</div>
+							</div>
+
+							<div class="product-item__action">
+								<div class="qty-control">
+									<button
+										mat-icon-button
+										type="button"
+										aria-label="Diminuir quantidade"
+										(click)="decreaseProductQuantity(product.id)"
+										[disabled]="!product.active || product.stock <= 0 || getProductQuantityValue(product.id) <= 1"
+									>
+										<mat-icon>remove</mat-icon>
+									</button>
+
+									<span class="qty-control__value">{{ getProductQuantityValue(product.id) }}</span>
+
+									<button
+										mat-icon-button
+										type="button"
+										aria-label="Aumentar quantidade"
+										(click)="increaseProductQuantity(product.id, product.stock)"
+										[disabled]="!product.active || product.stock <= 0 || getProductQuantityValue(product.id) >= product.stock"
+									>
+										<mat-icon>add</mat-icon>
+									</button>
+								</div>
+
+								<button
+									mat-raised-button
+									color="primary"
+									type="button"
+									(click)="addToCart(product)"
+									[disabled]="!product.active || product.stock <= 0"
+								>
+									<mat-icon>add_shopping_cart</mat-icon>
+									Adicionar
+								</button>
+							</div>
+						</article>
+					}
+				</div>
+			}
+		</mat-card>
+
+		<mat-card class="cart-card" appearance="outlined">
+			<div class="card-head card-head--stack">
+				<h2>Carrinho</h2>
+				<div class="totals">
+					<span>{{ totalItems() }} itens</span>
+					<strong>{{ cartTotal() | currency: 'BRL' : 'symbol' : '1.2-2' }}</strong>
+				</div>
+			</div>
+
+			@if (cartItems().length === 0) {
+				<p class="empty">Nenhum produto adicionado ainda.</p>
+			} @else {
+				<div class="cart-list">
+					@for (item of cartItems(); track trackByCartItem($index, item)) {
+						<article class="cart-item">
+							<div>
+								<h3>{{ item.title }}</h3>
+								<p>{{ item.subtotal | currency: 'BRL' : 'symbol' : '1.2-2' }}</p>
+							</div>
+
+							<div class="cart-item__actions">
+								<mat-form-field appearance="outline" class="qty-field">
+									<mat-label>Qtd</mat-label>
+									<input
+										matInput
+										type="number"
+										min="1"
+										[value]="item.quantity"
+										(input)="updateCartItemQuantity(item.id, $any($event.target).value)"
+									/>
+								</mat-form-field>
+
+								<button mat-icon-button color="warn" type="button" (click)="removeFromCart(item.id)">
+									<mat-icon>delete</mat-icon>
+								</button>
+							</div>
+						</article>
+					}
+				</div>
+			}
+
+			@if (checkoutStep() === 'cart') {
+				<button mat-raised-button color="primary" type="button" (click)="goToPayment()" [disabled]="cartItems().length === 0">
+					<mat-icon>payments</mat-icon>
+					Finalizar venda e ir para pagamento
+				</button>
+			} @else {
+				<form class="payment-form" [formGroup]="paymentForm" novalidate>
+					<h3>Pagamento</h3>
+
+					<mat-radio-group formControlName="paymentMethod" class="payment-options">
+						<mat-radio-button value="cash">Dinheiro</mat-radio-button>
+						<mat-radio-button value="pix" disabled>PIX (em breve)</mat-radio-button>
+					</mat-radio-group>
+
+					@if (isCashPayment()) {
+						<mat-form-field appearance="outline">
+							<mat-label>Valor pago</mat-label>
+							<input matInput type="text" inputmode="decimal" formControlName="cashReceived" placeholder="0,00" />
+						</mat-form-field>
+
+						<mat-form-field appearance="outline">
+							<mat-label>Troco</mat-label>
+							<input matInput type="text" [value]="(getChangeAmount() | currency: 'BRL' : 'symbol' : '1.2-2')" readonly />
+						</mat-form-field>
+
+						@if (getRemainingAmount() > 0) {
+							<p class="warning">Faltam {{ getRemainingAmount() | currency: 'BRL' : 'symbol' : '1.2-2' }} para concluir.</p>
+						}
+					}
+
+					<div class="payment-actions">
+						<button mat-stroked-button type="button" (click)="goBackToCart()">Voltar ao carrinho</button>
+						<button mat-raised-button color="primary" type="button" (click)="saveSale()" [disabled]="savingSale()">
+							<mat-icon>check_circle</mat-icon>
+							Registrar venda
+						</button>
+					</div>
+				</form>
+			}
+		</mat-card>
+	</div>
+</section>
