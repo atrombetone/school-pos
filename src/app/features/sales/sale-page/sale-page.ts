@@ -22,10 +22,12 @@ import {
   runTransaction,
   serverTimestamp,
 } from 'firebase/firestore';
+import { CATEGORY_OPTIONS, CategoriesType } from '../../../shared/models/categories.type';
 import { CashRegister, productItem } from '../../../shared/models/cash-register.model';
 import { environment } from '../../../../environments/environment';
 
 type PaymentMethod = 'cash' | 'pix';
+type CategoryFilter = 'all' | CategoriesType;
 
 interface SaleProduct {
   id: string;
@@ -73,16 +75,13 @@ export class SalePage implements OnInit {
   protected readonly loadingProducts = signal(true);
   protected readonly savingSale = signal(false);
   protected readonly errorMessage = signal('');
-  protected readonly selectedCategory = signal('all');
+  protected readonly selectedCategory = signal<CategoryFilter>('all');
   protected readonly checkoutStep = signal<'cart' | 'payment'>('cart');
   protected readonly products = signal<SaleProduct[]>([]);
   protected readonly productQuantities = signal<Record<string, string>>({});
   protected readonly cartItems = signal<CartItem[]>([]);
 
-  protected readonly categories = computed(() => {
-    const unique = new Set(this.products().map(product => product.category).filter(category => !!category));
-    return ['all', ...Array.from(unique).sort((a, b) => a.localeCompare(b, 'pt-BR'))];
-  });
+  protected readonly categories = computed<readonly CategoryFilter[]>(() => ['all', ...CATEGORY_OPTIONS]);
 
   protected readonly filteredProducts = computed(() => {
     const category = this.selectedCategory();
@@ -112,7 +111,7 @@ export class SalePage implements OnInit {
     await this.loadProducts();
   }
 
-  protected setCategory(category: string): void {
+  protected setCategory(category: CategoryFilter): void {
     this.selectedCategory.set(category);
   }
 

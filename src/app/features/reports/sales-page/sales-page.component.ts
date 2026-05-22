@@ -1,4 +1,4 @@
-import { CommonModule, AsyncPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,7 +9,7 @@ import { RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { SaleCardComponent } from './components/sale-card/sale-card.component';
 import { SalesFiltersComponent } from './components/sales-filters/sales-filters.component';
-import { Sale, SalesFilters } from './models/sales.model';
+import { Sale, SalesCategoryFilter, SalesFilters } from './models/sales.model';
 import { SalesService } from './services/sales.service';
 
 @Component({
@@ -24,7 +24,6 @@ import { SalesService } from './services/sales.service';
     MatPaginatorModule,
     SalesFiltersComponent,
     SaleCardComponent,
-      AsyncPipe
 ],
   templateUrl: './sales-page.component.html',
   styleUrl: './sales-page.component.scss',
@@ -43,7 +42,7 @@ export class SalesPageComponent implements OnInit {
   protected readonly filtersForm = this.formBuilder.group({
     startDate: this.formBuilder.control<Date | null>(null),
     endDate: this.formBuilder.control<Date | null>(null),
-    category: this.formBuilder.control<'all' | 'alimentacao' | 'bebidas' | 'material-escolar' | 'outros'>('all'),
+    category: this.formBuilder.control<SalesCategoryFilter>('all'),
     userName: this.formBuilder.control(''),
   });
 

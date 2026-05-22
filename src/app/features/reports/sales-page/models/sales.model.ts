@@ -1,6 +1,7 @@
 import { Timestamp } from 'firebase/firestore';
+import { CategoriesType } from '../../../../shared/models/categories.type';
 
-export type SalesCategoryFilter = 'all' | 'alimentacao' | 'bebidas' | 'material-escolar' | 'outros';
+export type SalesCategoryFilter = 'all' | CategoriesType;
 
 export interface SaleItem {
   productId: string;
@@ -16,7 +17,7 @@ export interface Sale {
   totalPaid: number;
   userName: string;
   items: SaleItem[];
-  category?: SalesCategoryFilter | string;
+  category?: CategoriesType | string;
 }
 
 export interface SalesFilters {

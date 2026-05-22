@@ -9,14 +9,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
+import { CATEGORY_SELECT_OPTIONS } from '../../../../../shared/models/categories.type';
 import { SalesCategoryFilter } from '../../models/sales.model';
 
 export const SALES_CATEGORY_OPTIONS: Array<{ value: SalesCategoryFilter; label: string }> = [
   { value: 'all', label: 'Todas' },
-  { value: 'alimentacao', label: 'Alimentação' },
-  { value: 'bebidas', label: 'Bebidas' },
-  { value: 'material-escolar', label: 'Material Escolar' },
-  { value: 'outros', label: 'Outros' },
+  ...CATEGORY_SELECT_OPTIONS,
 ];
 
 @Component({

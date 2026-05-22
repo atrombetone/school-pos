@@ -13,6 +13,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Product } from '../products-page/product.model';
+import { CATEGORY_OPTIONS, CategoriesType } from '../../../shared/models/categories.type';
 import {
   addDoc,
   collection,
@@ -22,7 +23,6 @@ import {
   updateDoc
 } from 'firebase/firestore';
 import { deleteObject, getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { Timestamp } from 'firebase/firestore';
 
 @Component({
   selector: 'app-product-page',
@@ -58,6 +58,7 @@ export class ProductPage implements OnInit, OnDestroy {
   protected readonly imagePreviewUrl = signal<string | null>(null);
   protected readonly productId = signal<string | null>(null);
   protected readonly units: Product['unit'][] = ['UN', 'LT', 'PC'];
+  protected readonly categories: readonly CategoriesType[] = CATEGORY_OPTIONS;
 
   private selectedFile: File | null = null;
   private currentImageUrl: string | null = null;

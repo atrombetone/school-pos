@@ -11,6 +11,7 @@ import {
 } from 'firebase/firestore';
 import { Observable, catchError, from, map, of } from 'rxjs';
 import { Sale, SaleItem, SalesCategoryFilter, SalesFilters } from '../models/sales.model';
+import { CategoriesType, CATEGORY_OPTIONS } from '../../../../shared/models/categories.type';
 
 const MAX_RESULTS = 250;
 
@@ -21,7 +22,7 @@ const MOCK_SALES: Sale[] = [
     paymentMethod: 'cash',
     totalPaid: 24,
     userName: 'Ana Costa',
-    category: 'alimentacao',
+    category: 'Salgados',
     items: [
       { productId: 'p-1', productTitle: 'Coca-Cola 2L', quantity: 2, unitPrice: 8 },
       { productId: 'p-2', productTitle: 'Salgado assado', quantity: 1, unitPrice: 8 },
@@ -33,7 +34,7 @@ const MOCK_SALES: Sale[] = [
     paymentMethod: 'pix',
     totalPaid: 35,
     userName: 'Bruno Lima',
-    category: 'material-escolar',
+    category: 'Outros',
     items: [
       { productId: 'p-3', productTitle: 'Camiseta da turma', quantity: 1, unitPrice: 35 },
     ],
@@ -44,7 +45,7 @@ const MOCK_SALES: Sale[] = [
     paymentMethod: 'cash',
     totalPaid: 18,
     userName: 'Carla Souza',
-    category: 'bebidas',
+    category: 'Bebidas geladas',
     items: [
       { productId: 'p-4', productTitle: 'Suco natural', quantity: 3, unitPrice: 6 },
     ],
@@ -55,7 +56,7 @@ const MOCK_SALES: Sale[] = [
     paymentMethod: 'cash',
     totalPaid: 12,
     userName: 'Diego Martins',
-    category: 'outros',
+    category: 'Outros',
     items: [
       { productId: 'p-5', productTitle: 'Cartela de rifas', quantity: 3, unitPrice: 4 },
     ],
@@ -174,7 +175,7 @@ export class SalesService {
 
     return sales.filter(sale => {
       if (filters.category && filters.category !== 'all') {
-        if ((sale.category ?? 'outros') !== filters.category) {
+        if ((sale.category ?? 'Outros') !== filters.category) {
           return false;
         }
       }
@@ -201,30 +202,38 @@ export class SalesService {
     });
   }
 
-  private normalizeCategory(value: unknown): SalesCategoryFilter | string | undefined {
-    const normalized = String(value ?? '').trim().toLowerCase();
+  private normalizeCategory(value: unknown): CategoriesType | string | undefined {
+    const raw = String(value ?? '').trim();
 
-    if (!normalized) {
+    if (!raw) {
       return undefined;
     }
 
+    const knownCategory = CATEGORY_OPTIONS.find(option => option.localeCompare(raw, 'pt-BR', { sensitivity: 'base' }) === 0);
+
+    if (knownCategory) {
+      return knownCategory;
+    }
+
+    const normalized = raw.toLowerCase();
+
     if (['alimentacao', 'alimentaçao', 'alimentação'].includes(normalized)) {
-      return 'alimentacao';
+      return 'Salgados';
     }
 
     if (['bebidas', 'bebida'].includes(normalized)) {
-      return 'bebidas';
+      return 'Bebidas geladas';
     }
 
     if (['material-escolar', 'material escolar', 'material_escolar'].includes(normalized)) {
-      return 'material-escolar';
+      return 'Outros';
     }
 
     if (['outros', 'outro'].includes(normalized)) {
-      return 'outros';
+      return 'Outros';
     }
 
-    return normalized;
+    return raw;
   }
 
   private filterByTerm(items: string[], term: string): string[] {

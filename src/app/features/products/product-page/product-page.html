@@ -23,7 +23,11 @@
 			<form class="product-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
 				<mat-form-field appearance="outline">
 					<mat-label>Categoria</mat-label>
-					<input matInput formControlName="category" placeholder="Lanches, Bebidas, Brindes" />
+					<mat-select formControlName="category" placeholder="Selecione a categoria">
+						@for (category of categories; track category) {
+							<mat-option [value]="category">{{ category }}</mat-option>
+						}
+					</mat-select>
 					@if (fieldInvalid('category')) {
 						<mat-error>Informe a categoria.</mat-error>
 					}
