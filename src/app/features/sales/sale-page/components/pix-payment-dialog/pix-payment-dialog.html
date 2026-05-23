@@ -1,0 +1,34 @@
+<h2 mat-dialog-title>Pagamento com PIX</h2>
+
+<mat-dialog-content class="pix-dialog__content">
+  <p class="pix-dialog__hint">Escaneie o QR Code ou copie o codigo PIX para concluir o pagamento.</p>
+
+  <div class="pix-dialog__qr-wrapper">
+    @if (qrCodeDataUrl()) {
+      <img class="pix-dialog__qr" [src]="qrCodeDataUrl()" alt="QR Code PIX" />
+    } @else {
+      <p class="pix-dialog__fallback">Nao foi possivel gerar o QR Code. Use o codigo copia e cola abaixo.</p>
+    }
+  </div>
+
+  <div class="pix-dialog__meta">
+    <p><strong>Chave PIX:</strong> {{ data.pixKey }}</p>
+    <p><strong>Total:</strong> {{ data.amount | currency: 'BRL' : 'symbol' : '1.2-2' }}</p>
+  </div>
+
+  <label class="pix-dialog__label" for="pix-code">Codigo copia e cola</label>
+  <textarea id="pix-code" class="pix-dialog__textarea" [value]="data.pixCopyPaste" readonly></textarea>
+
+  @if (copied()) {
+    <p class="pix-dialog__copied">Codigo copiado para a area de transferencia.</p>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button type="button" (click)="copyPixCode()">
+    <mat-icon>content_copy</mat-icon>
+    Copiar codigo
+  </button>
+  <button mat-button type="button" (click)="cancel()">Cancelar</button>
+  <button mat-raised-button color="primary" type="button" (click)="confirm()">Confirmar pagamento</button>
+</mat-dialog-actions>

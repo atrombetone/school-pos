@@ -2,12 +2,25 @@ import { Component, inject, signal } from '@angular/core';
 import { Auth, signInWithEmailAndPassword, signOut } from '@angular/fire/auth';
 import { Firestore } from '@angular/fire/firestore';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { doc, getDoc } from 'firebase/firestore';
 
 @Component({
   selector: 'app-auth-page',
-  imports: [ReactiveFormsModule],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatProgressSpinnerModule,
+  ],
   templateUrl: './auth-page.html',
   styleUrl: './auth-page.scss',
 })

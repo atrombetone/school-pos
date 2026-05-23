@@ -1,0 +1,97 @@
+<section class="perfil-page">
+	<header class="perfil-page__header">
+		<p class="kicker">MINHA CONTA</p>
+		<h1>Perfil do usuário</h1>
+		<p class="subtitle">Dados carregados do usuário atual.</p>
+	</header>
+
+	@if (errorMessage()) {
+		<div class="feedback feedback--error" role="alert" aria-live="assertive">{{ errorMessage() }}</div>
+	}
+
+	@if (loading()) {
+		<div class="loading-state" aria-live="polite">
+			<mat-progress-spinner mode="indeterminate" diameter="34" aria-hidden="true"></mat-progress-spinner>
+			<span>Carregando informacoes do perfil...</span>
+		</div>
+	} @else if (profile(); as user) {
+		<mat-card class="perfil-card" appearance="outlined">
+			<div class="perfil-card__head">
+				<div>
+					<h2>{{ user.name }}</h2>
+					<div class="perfil-card__email-row">
+						<p [title]="user.email">{{ maskEmail(user.email) }}</p>
+						<button
+							mat-icon-button
+							type="button"
+							aria-label="Copiar email"
+							title="Copiar email"
+							(click)="copyField('Email', user.email)"
+						>
+							<mat-icon>content_copy</mat-icon>
+						</button>
+					</div>
+				</div>
+
+				<button mat-flat-button color="primary" type="button" (click)="openEditDialog()">
+					<mat-icon>edit</mat-icon>
+					Editar perfil
+				</button>
+			</div>
+
+			<div class="perfil-grid" aria-label="Dados do usuario em modo somente leitura">
+				<div class="item">
+					<span>UID</span>
+					<div class="item__copy-row">
+						<strong class="item__value item__value--mono" [title]="user.uid">{{ maskUid(user.uid) }}</strong>
+						<button
+							mat-icon-button
+							type="button"
+							aria-label="Copiar UID"
+							title="Copiar UID"
+							(click)="copyField('UID', user.uid)"
+						>
+							<mat-icon>content_copy</mat-icon>
+						</button>
+					</div>
+				</div>
+
+				<div class="item">
+					<span>Status de aprovacao</span>
+					<strong>{{ user.approvalStatus }}</strong>
+				</div>
+
+				<div class="item">
+					<span>Aprovado</span>
+					<strong>{{ user.approved ? 'true' : 'false' }}</strong>
+				</div>
+
+				<div class="item">
+					<span>Aprovado por</span>
+					<div class="item__copy-row">
+						<strong class="item__value" [title]="user.approvedBy">{{ maskApprovedBy(user.approvedBy) }}</strong>
+						<button
+							mat-icon-button
+							type="button"
+							aria-label="Copiar aprovador"
+							title="Copiar aprovador"
+							(click)="copyField('Aprovador', user.approvedBy)"
+						>
+							<mat-icon>content_copy</mat-icon>
+						</button>
+					</div>
+				</div>
+
+				<div class="item">
+					<span>Criado em</span>
+					<strong>{{ formatTimestamp(user.createdAt) }}</strong>
+				</div>
+
+				<div class="item">
+					<span>Atualizado em</span>
+					<strong>{{ formatTimestamp(user.updatedAt) }}</strong>
+				</div>
+			</div>
+		</mat-card>
+	}
+</section>

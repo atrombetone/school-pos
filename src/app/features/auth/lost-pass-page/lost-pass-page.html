@@ -1,1 +1,49 @@
-<p>lost-pass-page works!</p>
+<section class="lost-pass">
+	<mat-card class="lost-pass__card" appearance="outlined">
+		<div class="lost-pass__brand">
+			<span class="lost-pass__kicker">SchoolPOS</span>
+			<h1>Recuperar senha</h1>
+			<p>Informe seu email para receber o link de recuperação.</p>
+		</div>
+
+		@if (successMessage()) {
+			<div class="lost-pass__feedback" role="status" aria-live="polite">
+				<mat-icon aria-hidden="true">mark_email_read</mat-icon>
+				<span>{{ successMessage() }}</span>
+			</div>
+		}
+
+		<form class="lost-pass__form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+			<mat-form-field appearance="outline" subscriptSizing="dynamic">
+				<mat-label>Email</mat-label>
+				<input
+					matInput
+					type="email"
+					formControlName="email"
+					placeholder="voce@escola.com"
+					autocomplete="email"
+				/>
+				@if (fieldInvalid()) {
+					<mat-error>Informe um email valido.</mat-error>
+				}
+			</mat-form-field>
+
+			<button
+				class="lost-pass__submit"
+				mat-flat-button
+				type="submit"
+				color="primary"
+				[disabled]="isSubmitting()"
+			>
+				@if (isSubmitting()) {
+					<mat-progress-spinner diameter="18" mode="indeterminate" aria-hidden="true"></mat-progress-spinner>
+					<span>Enviando...</span>
+				} @else {
+					<span>Enviar link de recuperação</span>
+				}
+			</button>
+
+			<a class="lost-pass__back" routerLink="/auth">Voltar para login</a>
+		</form>
+	</mat-card>
+</section>

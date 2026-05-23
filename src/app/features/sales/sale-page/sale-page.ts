@@ -8,11 +8,11 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import {
-  addDoc,
   collection,
   doc,
   getDocs,
@@ -22,9 +22,11 @@ import {
   runTransaction,
   serverTimestamp,
 } from 'firebase/firestore';
+import { firstValueFrom } from 'rxjs';
 import { CATEGORY_OPTIONS, CategoriesType } from '../../../shared/models/categories.type';
 import { CashRegister, productItem } from '../../../shared/models/cash-register.model';
 import { environment } from '../../../../environments/environment';
+import { PixPaymentDialogComponent } from './components/pix-payment-dialog/pix-payment-dialog';
 
 type PaymentMethod = 'cash' | 'pix';
 type CategoryFilter = 'all' | CategoriesType;
@@ -56,6 +58,7 @@ interface CartItem {
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
+    MatDialogModule,
     MatSelectModule,
     MatButtonModule,
     MatIconModule,
@@ -71,6 +74,8 @@ export class SalePage implements OnInit {
   private readonly auth = inject(Auth);
   private readonly formBuilder = inject(NonNullableFormBuilder);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly dialog = inject(MatDialog);
+  private readonly pixKey = String(environment.pixkey ?? '').trim();
 
   protected readonly loadingProducts = signal(true);
   protected readonly savingSale = signal(false);
@@ -292,13 +297,34 @@ export class SalePage implements OnInit {
       return;
     }
 
-    if (this.paymentForm.controls.paymentMethod.value === 'pix') {
-      this.errorMessage.set('Pagamento via PIX ainda nao esta disponivel nesta versao.');
-      return;
+    const paymentMethod = this.paymentForm.controls.paymentMethod.value;
+    const totalAmount = this.cartTotal();
+
+    if (paymentMethod === 'cash') {
+      const cashReceived = this.getCashReceivedAmount();
+      if (cashReceived < totalAmount) {
+        this.errorMessage.set('Valor pago em dinheiro menor que o total da venda.');
+        return;
+      }
     }
 
-    const cashReceived = this.getCashReceivedAmount();
-    if (this.isCashPayment() && cashReceived < this.cartTotal()) {
+    if (paymentMethod === 'pix') {
+      if (!this.pixKey) {
+        this.errorMessage.set('Chave PIX nao configurada no ambiente.');
+        return;
+      }
+
+      const pixCopyPaste = this.buildPixCopyPaste(totalAmount, this.pixKey);
+      const confirmed = await this.openPixPaymentDialog(pixCopyPaste);
+
+      if (!confirmed) {
+        return;
+      }
+    }
+
+    const cashReceived = paymentMethod === 'cash' ? this.getCashReceivedAmount() : totalAmount;
+
+    if (paymentMethod === 'cash' && cashReceived < this.cartTotal()) {
       this.errorMessage.set('Valor pago em dinheiro menor que o total da venda.');
       return;
     }
@@ -327,9 +353,9 @@ export class SalePage implements OnInit {
         idUser: this.auth.currentUser?.uid ?? '',
         ammount: this.cartTotal(),
         itens: items,
-        paymentMethod: 'cash',
+        paymentMethod,
         cashReceived,
-        changeAmount: this.getChangeAmount(),
+        changeAmount: paymentMethod === 'cash' ? this.getChangeAmount() : 0,
       };
 
       await runTransaction(this.firestore, async transaction => {
@@ -472,6 +498,76 @@ export class SalePage implements OnInit {
     } catch {
       return Date.now();
     }
+  }
+
+  private async openPixPaymentDialog(pixCopyPaste: string): Promise<boolean> {
+    const dialogRef = this.dialog.open(PixPaymentDialogComponent, {
+      width: '440px',
+      maxWidth: '95vw',
+      disableClose: true,
+      data: {
+        pixCopyPaste,
+        amount: this.cartTotal(),
+        pixKey: this.pixKey,
+      },
+    });
+
+    const confirmed = await firstValueFrom(dialogRef.afterClosed());
+    return confirmed === true;
+  }
+
+  private buildPixCopyPaste(amount: number, pixKey: string): string {
+    const merchantAccountInfo =
+      this.formatPixField('00', 'BR.GOV.BCB.PIX') + this.formatPixField('01', pixKey.trim());
+    const additionalData = this.formatPixField('05', '***');
+    const payloadWithoutCrc =
+      this.formatPixField('00', '01') +
+      this.formatPixField('26', merchantAccountInfo) +
+      this.formatPixField('52', '0000') +
+      this.formatPixField('53', '986') +
+      this.formatPixField('54', amount.toFixed(2)) +
+      this.formatPixField('58', 'BR') +
+      this.formatPixField('59', this.normalizePixText('School Pos', 25)) +
+      this.formatPixField('60', this.normalizePixText('Sao Paulo', 15)) +
+      this.formatPixField('62', additionalData) +
+      '6304';
+
+    return payloadWithoutCrc + this.calculatePixCrc16(payloadWithoutCrc);
+  }
+
+  private formatPixField(id: string, value: string): string {
+    return `${id}${value.length.toString().padStart(2, '0')}${value}`;
+  }
+
+  private normalizePixText(value: string, maxLength: number): string {
+    const normalized = value
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^A-Za-z0-9 ]/g, '')
+      .trim()
+      .toUpperCase();
+
+    return (normalized || 'NA').slice(0, maxLength);
+  }
+
+  private calculatePixCrc16(payload: string): string {
+    let crc = 0xffff;
+
+    for (let i = 0; i < payload.length; i += 1) {
+      crc ^= payload.charCodeAt(i) << 8;
+
+      for (let bit = 0; bit < 8; bit += 1) {
+        if ((crc & 0x8000) !== 0) {
+          crc = (crc << 1) ^ 0x1021;
+        } else {
+          crc <<= 1;
+        }
+
+        crc &= 0xffff;
+      }
+    }
+
+    return crc.toString(16).toUpperCase().padStart(4, '0');
   }
 
 }

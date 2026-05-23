@@ -1,85 +1,83 @@
 <section class="create-account">
 	<div class="create-account__shell">
-		<div class="create-account__intro">
-			<span class="badge">Criacao de conta</span>
+		<mat-card class="create-account__intro" appearance="outlined">
+			<span class="badge">Criação de conta</span>
 
 			<h1>Solicite seu acesso ao PDV escolar</h1>
 
 			<p>
-				Cadastre seu email e senha para entrar no sistema. A conta sera criada, mas o login
-				so sera liberado depois da aprovacao do administrador.
+				Cadastre seu email e senha para entrar no sistema. A conta será criada, mas o login
+				só será liberado depois da aprovacão do administrador.
 			</p>
 
 			<div class="approval-box">
-				<strong>Aprovacao obrigatoria</strong>
+				<strong>Aprovacão obrigatória</strong>
 				<p>Somente o administrador <span>altrombetone@gmail.com</span> pode liberar o acesso.</p>
 			</div>
-		</div>
+		</mat-card>
 
-		<form class="create-account__form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+		<mat-card class="create-account__form" appearance="outlined">
 			<div class="form-header">
 				<h2>Dados da conta</h2>
 				<a routerLink="/auth">Voltar para login</a>
 			</div>
 
 			@if (successMessage()) {
-				<div class="message message--success">{{ successMessage() }}</div>
+				<div class="message message--success" role="status" aria-live="polite">{{ successMessage() }}</div>
 			}
 
 			@if (errorMessage()) {
-				<div class="message message--error">{{ errorMessage() }}</div>
+				<div class="message message--error" role="alert" aria-live="assertive">{{ errorMessage() }}</div>
 			}
 
-			<label class="field">
-				<span>Nome completo</span>
-				<input type="text" formControlName="name" placeholder="Ex.: Maria Silva" />
-				@if (fieldInvalid('name')) {
-					<small>Informe ao menos 3 caracteres.</small>
-				}
-			</label>
+			<form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+				<mat-form-field appearance="outline" subscriptSizing="dynamic">
+					<mat-label>Nome completo</mat-label>
+					<input matInput type="text" formControlName="name" placeholder="Ex.: Maria Silva" autocomplete="name" />
+					@if (fieldInvalid('name')) {
+						<mat-error>Informe ao menos 3 carácteres.</mat-error>
+					}
+				</mat-form-field>
 
-			<label class="field">
-				<span>Email</span>
-				<input type="email" formControlName="email" placeholder="voce@escola.com" />
-				@if (fieldInvalid('email')) {
-					<small>Digite um email valido.</small>
-				}
-			</label>
+				<mat-form-field appearance="outline" subscriptSizing="dynamic">
+					<mat-label>Email</mat-label>
+					<input matInput type="email" formControlName="email" placeholder="voce@escola.com" autocomplete="email" />
+					@if (fieldInvalid('email')) {
+						<mat-error>Digite um email válido.</mat-error>
+					}
+				</mat-form-field>
 
-			<label class="field">
-				<span>Senha</span>
-				<input type="password" formControlName="password" placeholder="Digite uma senha segura" />
-				@if (fieldInvalid('password')) {
-					<small>A senha precisa ter ao menos 6 caracteres.</small>
-				}
-			</label>
+				<mat-form-field appearance="outline" subscriptSizing="dynamic">
+					<mat-label>Senha</mat-label>
+					<input matInput type="password" formControlName="password" placeholder="Digite uma senha segura" autocomplete="new-password" />
+					@if (fieldInvalid('password')) {
+						<mat-error>A senha precisa ter ao menos 6 carácteres.</mat-error>
+					}
+				</mat-form-field>
 
-			<label class="field">
-				<span>Confirmar senha</span>
-				<input
-					type="password"
-					formControlName="confirmPassword"
-					placeholder="Repita a senha"
-				/>
-				@if (fieldInvalid('confirmPassword')) {
-					<small>Confirme a senha para continuar.</small>
-				}
-				@if (passwordMismatch()) {
-					<small>As senhas precisam ser iguais.</small>
-				}
-			</label>
+				<mat-form-field appearance="outline" subscriptSizing="dynamic">
+					<mat-label>Confirmar senha</mat-label>
+					<input matInput type="password" formControlName="confirmPassword" placeholder="Repita a senha" autocomplete="new-password" />
+					@if (fieldInvalid('confirmPassword')) {
+						<mat-error>Confirme a senha para continuar.</mat-error>
+					} @else if (passwordMismatch()) {
+						<mat-error>As senhas precisam ser iguais.</mat-error>
+					}
+				</mat-form-field>
 
-			<button class="submit-button" type="submit" [disabled]="isSubmitting()">
-				@if (isSubmitting()) {
-					Criando conta...
-				} @else {
-					Criar conta
-				}
-			</button>
+				<button class="submit-button" mat-flat-button type="submit" color="primary" [disabled]="isSubmitting()">
+					@if (isSubmitting()) {
+						<mat-progress-spinner diameter="18" mode="indeterminate" aria-hidden="true"></mat-progress-spinner>
+						<span>Criando conta...</span>
+					} @else {
+						<span>Criar conta</span>
+					}
+				</button>
+			</form>
 
 			<p class="form-note">
-				Apos a criacao, o usuario aparece como pendente no banco e aguarda liberacao manual.
+				Após a criação, o usuário aparece como pendente no banco e aguarda liberação manual.
 			</p>
-		</form>
+		</mat-card>
 	</div>
 </section>

@@ -1,0 +1,59 @@
+:host {
+  display: block;
+}
+
+.pix-dialog__content {
+  display: grid;
+  gap: 0.75rem;
+  min-width: min(420px, 100%);
+}
+
+.pix-dialog__hint {
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.pix-dialog__qr-wrapper {
+  display: grid;
+  justify-content: center;
+  padding: 0.75rem;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  background: #fff;
+}
+
+.pix-dialog__qr {
+  width: min(280px, 100%);
+  height: auto;
+}
+
+.pix-dialog__fallback {
+  margin: 0;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.pix-dialog__meta p {
+  margin: 0;
+}
+
+.pix-dialog__label {
+  font-weight: 700;
+}
+
+.pix-dialog__textarea {
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;
+  padding: 0.6rem;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.pix-dialog__copied {
+  margin: 0;
+  color: var(--color-success-dark);
+  font-weight: 700;
+}

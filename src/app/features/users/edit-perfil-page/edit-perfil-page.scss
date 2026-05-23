@@ -1,0 +1,23 @@
+.edit-perfil__content {
+	min-width: min(92vw, 480px);
+	display: grid;
+	gap: 0.7rem;
+}
+
+.edit-perfil__hint {
+	margin: 0;
+	color: var(--color-text-secondary);
+	line-height: 1.5;
+}
+
+.edit-perfil__feedback {
+	padding: 0.7rem 0.8rem;
+	border-radius: 10px;
+	font-weight: 700;
+	color: var(--color-danger-dark);
+	background: color-mix(in srgb, var(--color-danger-light) 16%, #fff);
+}
+
+mat-form-field {
+	width: 100%;
+}

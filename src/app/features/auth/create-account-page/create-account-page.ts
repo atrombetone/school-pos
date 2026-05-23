@@ -9,6 +9,11 @@ import {
 import { Auth, createUserWithEmailAndPassword } from '@angular/fire/auth';
 import { Firestore } from '@angular/fire/firestore';
 import { RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
 
 const passwordsMatchValidator: ValidatorFn = control => {
@@ -24,7 +29,15 @@ const passwordsMatchValidator: ValidatorFn = control => {
 
 @Component({
   selector: 'app-create-account-page',
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatProgressSpinnerModule,
+  ],
   templateUrl: './create-account-page.html',
   styleUrl: './create-account-page.scss',
 })

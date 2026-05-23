@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>Editar perfil</h2>
+
+<mat-dialog-content class="edit-perfil__content">
+	<p class="edit-perfil__hint">Voce pode alterar apenas o nome do usuário.</p>
+
+	@if (errorMessage()) {
+		<div class="edit-perfil__feedback" role="alert" aria-live="assertive">{{ errorMessage() }}</div>
+	}
+
+	<form [formGroup]="form" (ngSubmit)="save()" novalidate>
+		<mat-form-field appearance="outline" subscriptSizing="dynamic">
+			<mat-label>Nome</mat-label>
+			<input matInput type="text" formControlName="name" autocomplete="name" />
+			@if (fieldInvalid()) {
+				<mat-error>Informe ao menos 3 carácteres.</mat-error>
+			}
+		</mat-form-field>
+	</form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+	<button mat-button type="button" (click)="close()">Cancelar</button>
+	<button mat-flat-button color="primary" type="button" [disabled]="isSaving()" (click)="save()">
+		{{ isSaving() ? 'Salvando...' : 'Salvar nome' }}
+	</button>
+</mat-dialog-actions>

@@ -1,0 +1,66 @@
+<section class="users-admin-page">
+	<header class="users-admin-page__header">
+		<div>
+			<p class="kicker">GESTAO DE USUARIOS</p>
+			<h1>Aprovacao de acessos</h1>
+			<p class="subtitle">Visualize usuarios cadastrados e aprove os que ainda estao pendentes.</p>
+		</div>
+	</header>
+
+	@if (errorMessage()) {
+		<div class="feedback feedback--error">{{ errorMessage() }}</div>
+	}
+
+	<mat-card class="users-card" appearance="outlined">
+		<div class="users-card__head">
+			<h2>Usuarios</h2>
+			<span>{{ users().length }} registros</span>
+		</div>
+
+		@if (loading()) {
+			<p class="empty">Carregando usuarios...</p>
+		} @else if (users().length === 0) {
+			<p class="empty">Nenhum usuario encontrado na colecao users.</p>
+		} @else {
+			<div class="table-wrapper">
+				<table class="users-table">
+					<thead>
+						<tr>
+							<th>Nome</th>
+							<th>E-mail</th>
+							<th>Status</th>
+							<th>Acoes</th>
+						</tr>
+					</thead>
+					<tbody>
+						@for (user of users(); track trackByUser($index, user)) {
+							<tr>
+								<td>
+									<strong>{{ user.name }}</strong>
+								</td>
+								<td>{{ user.email }}</td>
+								<td>
+									<span class="status-chip" [class.status-chip--approved]="!canApprove(user)">
+										{{ canApprove(user) ? 'Pendente' : 'Aprovado' }}
+									</span>
+								</td>
+								<td>
+									<button
+										mat-stroked-button
+										type="button"
+										color="primary"
+										[disabled]="!canApprove(user) || isApproving(user.id)"
+										(click)="approveUser(user)"
+									>
+										<mat-icon>{{ canApprove(user) ? 'how_to_reg' : 'check_circle' }}</mat-icon>
+										{{ isApproving(user.id) ? 'Aprovando...' : canApprove(user) ? 'Aprovar usuario' : 'Aprovado' }}
+									</button>
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		}
+	</mat-card>
+</section>

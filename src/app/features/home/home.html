@@ -11,6 +11,11 @@
 				<a [routerLink]="['/home/sales']" routerLinkActive="is-active">PDV</a>
 				<a [routerLink]="['/home/reports/sales']" routerLinkActive="is-active">Vendas</a>
 				<a [routerLink]="['/home/products']" routerLinkActive="is-active">Produtos</a>
+				<a [routerLink]="['/home/perfil']" routerLinkActive="is-active">Perfil</a>
+				@if (isAdmin()) {
+					<a [routerLink]="['/home/users-admin']" routerLinkActive="is-active">Usuários</a>
+				} 
+				
 			</nav>
 		</div>
 
@@ -27,6 +32,10 @@
 				<button mat-menu-item [routerLink]="['/home/sales']">PDV</button>
 				<button mat-menu-item [routerLink]="['/home/reports/sales']">Vendas</button>
 				<button mat-menu-item [routerLink]="['/home/products']">Produtos</button>
+				<button mat-menu-item [routerLink]="['/home/perfil']">Perfil</button>
+				@if (isAdmin()) {
+					<button mat-menu-item [routerLink]="['/home/users-admin']">Usuários</button>
+				}
 				<button mat-menu-item (click)="logout()">Sair</button>
 			</mat-menu>
 		</div>

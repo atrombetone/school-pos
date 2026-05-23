@@ -1,5 +1,5 @@
 <section class="auth">
-	<div class="auth__card">
+	<mat-card class="auth__card" appearance="outlined">
 		<span class="auth__badge">Acesso ao sistema</span>
 		<h1>Entrar no PDV escolar</h1>
 		<p class="auth__subtitle">
@@ -7,38 +7,41 @@
 		</p>
 
 		@if (errorMessage()) {
-			<div class="auth__message auth__message--error">{{ errorMessage() }}</div>
+			<div class="auth__message auth__message--error" role="alert" aria-live="assertive">{{ errorMessage() }}</div>
 		}
 
 		<form class="auth__form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
-			<label class="field">
-				<span>Email</span>
-				<input type="email" formControlName="email" placeholder="voce@escola.com" />
+			<mat-form-field appearance="outline" subscriptSizing="dynamic">
+				<mat-label>Email</mat-label>
+				<input matInput type="email" formControlName="email" placeholder="voce@escola.com" autocomplete="email" />
 				@if (fieldInvalid('email')) {
-					<small>Digite um email valido.</small>
+					<mat-error>Digite um email valido.</mat-error>
 				}
-			</label>
+			</mat-form-field>
 
-			<label class="field">
-				<span>Senha</span>
-				<input type="password" formControlName="password" placeholder="Sua senha" />
+			<mat-form-field appearance="outline" subscriptSizing="dynamic">
+				<mat-label>Senha</mat-label>
+				<input matInput type="password" formControlName="password" placeholder="Sua senha" autocomplete="current-password" />
 				@if (fieldInvalid('password')) {
-					<small>A senha deve ter no minimo 6 caracteres.</small>
+					<mat-error>A senha deve ter no minimo 6 caracteres.</mat-error>
 				}
-			</label>
+			</mat-form-field>
 
-			<button class="submit-button" type="submit" [disabled]="isSubmitting()">
+			<a class="auth__forgot" routerLink="/lost-password">Esqueci minha senha</a>
+
+			<button class="submit-button" mat-flat-button type="submit" color="primary" [disabled]="isSubmitting()">
 				@if (isSubmitting()) {
-					Entrando...
+					<mat-progress-spinner diameter="18" mode="indeterminate" aria-hidden="true"></mat-progress-spinner>
+					<span>Entrando...</span>
 				} @else {
-					Entrar
+					<span>Entrar</span>
 				}
 			</button>
 		</form>
 
 		<div class="auth__links">
-			<a href="/create-account">Criar conta</a>
-			<a href="/">Voltar para pagina inicial</a>
+			<a routerLink="/create-account">Criar conta</a>
+			<a routerLink="/">Voltar para pagina inicial</a>
 		</div>
-	</div>
+	</mat-card>
 </section>
