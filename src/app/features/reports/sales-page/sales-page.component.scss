@@ -82,6 +82,10 @@ h1 {
   gap: 0.9rem;
 }
 
+.sales-list > * {
+  min-width: 0;
+}
+
 .sales-skeleton {
   max-width: 1280px;
   width: 100%;

@@ -1,9 +1,13 @@
 :host {
   display: block;
+  width: 100%;
+  min-width: 0;
 }
 
 .sale-accordion {
   display: block;
+  width: 100%;
+  min-width: 0;
 }
 
 .sale-card {
@@ -78,13 +82,18 @@
 }
 
 .sale-card__items {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   min-width: 520px;
+  table-layout: fixed;
 }
 
 th,
@@ -103,6 +112,10 @@ th {
 
 td {
   color: var(--color-text);
+}
+
+td:first-child {
+  overflow-wrap: anywhere;
 }
 
 .sale-card__footer {
@@ -134,5 +147,22 @@ td {
 
   .sale-card__header {
     grid-template-columns: 1fr;
+  }
+
+  table {
+    min-width: 0;
+  }
+
+  th,
+  td {
+    padding: 0.55rem 0.2rem;
+    font-size: 0.86rem;
+  }
+
+  .sale-card__header-field strong {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: initial;
+    overflow-wrap: anywhere;
   }
 }
