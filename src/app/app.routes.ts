@@ -2,7 +2,8 @@ import { Routes } from '@angular/router';
 import { usersAdminGuard } from './core/guards/users-admin.guard';
 
 export const routes: Routes = [
-	{ path: '', loadComponent: () => import('./landing/landing-page').then(m => m.LandingPage) },
+    { path: '', loadComponent: () => import('./core/splash/splash').then(m => m.Splash) },
+    { path: 'landing', loadComponent: () => import('./landing/landing-page').then(m => m.LandingPage) },
     { path: 'login', redirectTo: 'auth', pathMatch: 'full' },
 	{ path: 'auth', loadComponent: () => import('./features/auth/auth-page/auth-page').then(m => m.AuthPage) },
     { path: 'lost-password', loadComponent: () => import('./features/auth/lost-pass-page/lost-pass-page').then(m => m.LostPassPage) },

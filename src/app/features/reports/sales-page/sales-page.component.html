@@ -47,7 +47,7 @@
     </mat-card>
   } @else {
     <div class="sales-list">
-      @for (sale of sales(); track trackBySale($index, sale)) {
+      @for (sale of visibleSales(); track trackBySale($index, sale)) {
         <app-sale-card [sale]="sale" />
       }
     </div>
