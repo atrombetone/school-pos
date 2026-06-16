@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Firestore } from '@angular/fire/firestore';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import {
@@ -37,6 +38,7 @@ interface StockProduct {
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
+    MatSelectModule,
     MatSnackBarModule,
   ],
   templateUrl: './stock-page.html',
@@ -52,6 +54,29 @@ export class StockPage implements OnInit {
   protected readonly loadingProducts = signal(true);
   protected readonly saving = signal(false);
   protected readonly errorMessage = signal('');
+  protected readonly selectedCategory = signal('all');
+  protected readonly searchTerm = signal('');
+  protected readonly categories = computed(() => {
+    const uniqueCategories = new Set(
+      this.products()
+        .map(product => String(product.category ?? '').trim())
+        .filter(category => category.length > 0)
+    );
+
+    return ['all', ...Array.from(uniqueCategories).sort((a, b) => a.localeCompare(b, 'pt-BR'))];
+  });
+  protected readonly filteredProducts = computed(() => {
+    const selectedCategory = this.selectedCategory();
+    const normalizedSearch = this.searchTerm().trim().toLocaleLowerCase('pt-BR');
+
+    return this.products().filter(product => {
+      const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
+      const matchesTitle = normalizedSearch.length === 0
+        || product.title.toLocaleLowerCase('pt-BR').includes(normalizedSearch);
+
+      return matchesCategory && matchesTitle;
+    });
+  });
 
   async ngOnInit(): Promise<void> {
     await this.loadProducts();
@@ -69,6 +94,14 @@ export class StockPage implements OnInit {
 
   protected async goBack(): Promise<void> {
     await this.router.navigateByUrl('/home/products');
+  }
+
+  protected setCategory(category: string): void {
+    this.selectedCategory.set(category);
+  }
+
+  protected setSearchTerm(value: string): void {
+    this.searchTerm.set(value);
   }
 
   protected async save(): Promise<void> {

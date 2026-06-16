@@ -1,10 +1,13 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { Firestore } from '@angular/fire/firestore';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { Product } from './product.model';
 import {
   collection,
@@ -22,7 +25,10 @@ import {
     RouterLink,
     MatCardModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule
   ],
   templateUrl: './products-page.html',
   styleUrl: './products-page.scss',
@@ -36,6 +42,29 @@ export class ProductsPage implements OnInit, OnDestroy {
   protected readonly products = signal<Product[]>([]);
   protected readonly loadingProducts = signal(true);
   protected readonly errorMessage = signal('');
+  protected readonly selectedCategory = signal('all');
+  protected readonly searchTerm = signal('');
+  protected readonly categories = computed(() => {
+    const uniqueCategories = new Set(
+      this.products()
+        .map(product => String(product.category ?? '').trim())
+        .filter(category => category.length > 0)
+    );
+
+    return ['all', ...Array.from(uniqueCategories).sort((a, b) => a.localeCompare(b, 'pt-BR'))];
+  });
+  protected readonly filteredProducts = computed(() => {
+    const selectedCategory = this.selectedCategory();
+    const normalizedSearch = this.searchTerm().trim().toLocaleLowerCase('pt-BR');
+
+    return this.products().filter(product => {
+      const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
+      const matchesTitle = normalizedSearch.length === 0
+        || product.title.toLocaleLowerCase('pt-BR').includes(normalizedSearch);
+
+      return matchesCategory && matchesTitle;
+    });
+  });
 
   ngOnInit(): void {
     this.watchProducts();
@@ -47,6 +76,14 @@ export class ProductsPage implements OnInit, OnDestroy {
 
   protected trackByProduct(_: number, product: Product): string {
     return product.id ?? product.title;
+  }
+
+  protected setCategory(category: string): void {
+    this.selectedCategory.set(category);
+  }
+
+  protected setSearchTerm(value: string): void {
+    this.searchTerm.set(value);
   }
 
   private watchProducts(): void {

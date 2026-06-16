@@ -23,16 +23,43 @@
 	<mat-card class="list-card" appearance="outlined">
 		<div class="list-head">
 			<h2>Produtos cadastrados</h2>
-			<span>{{ products().length }} itens</span>
+			<span>{{ filteredProducts().length }} de {{ products().length }} itens</span>
+		</div>
+
+		<div class="filters">
+			<mat-form-field appearance="outline" class="filter-field filter-field--category">
+				<mat-label>Categoria</mat-label>
+				<mat-select [value]="selectedCategory()" (valueChange)="setCategory($event)">
+					@for (category of categories(); track category) {
+						<mat-option [value]="category">
+							{{ category === 'all' ? 'Todas' : category }}
+						</mat-option>
+					}
+				</mat-select>
+			</mat-form-field>
+
+			<mat-form-field appearance="outline" class="filter-field filter-field--search">
+				<mat-label>Buscar por titulo</mat-label>
+				<input
+					matInput
+					type="text"
+					[value]="searchTerm()"
+					(input)="setSearchTerm($any($event.target).value)"
+					placeholder="Ex.: Refrigerante"
+				/>
+				<mat-icon matSuffix>search</mat-icon>
+			</mat-form-field>
 		</div>
 
 		@if (loadingProducts()) {
 			<p class="empty">Carregando produtos...</p>
 		} @else if (products().length === 0) {
-			<p class="empty">Nenhum produto cadastrado ainda.</p>
+			<p class="empty">Nenhum produto ativo cadastrado.</p>
+		} @else if (filteredProducts().length === 0) {
+			<p class="empty">Nenhum produto encontrado para os filtros informados.</p>
 		} @else {
 			<div class="products-list">
-				@for (product of products(); track trackByProduct($index, product)) {
+				@for (product of filteredProducts(); track trackByProduct($index, product)) {
 					<a class="product-item" [routerLink]="['/home/products', product.id]">
 						<div class="product-item__media">
 							@if (product.imageUrl) {

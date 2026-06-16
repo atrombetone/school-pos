@@ -96,7 +96,7 @@ export class SalePage implements OnInit {
       return list;
     }
 
-    return list.filter(product => product.category === category);
+    return list.filter(product => product.category === category && product.active); 
   });
 
   protected readonly cartTotal = computed(() =>
@@ -455,10 +455,12 @@ export class SalePage implements OnInit {
         } satisfies SaleProduct;
       });
 
-      this.products.set(list.filter(product => product.price > 0));
+      const activeProducts = list.filter(product => product.active && product.price > 0);
+
+      this.products.set(activeProducts);
 
       const quantities: Record<string, string> = {};
-      for (const product of list) {
+      for (const product of activeProducts) {
         quantities[product.id] = '1';
       }
       this.productQuantities.set(quantities);

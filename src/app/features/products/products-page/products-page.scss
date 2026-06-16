@@ -80,6 +80,17 @@ h1 {
 	font-weight: 700;
 }
 
+.filters {
+	margin-top: 0.8rem;
+	display: grid;
+	grid-template-columns: minmax(220px, 320px) minmax(260px, 1fr);
+	gap: 0.7rem;
+}
+
+.filter-field {
+	width: 100%;
+}
+
 .products-list {
 	margin-top: 0.8rem;
 	display: grid;
@@ -168,6 +179,10 @@ h3 {
 }
 
 @media (max-width: 640px) {
+	.filters {
+		grid-template-columns: 1fr;
+	}
+
 	.product-item {
 		grid-template-columns: 72px 1fr;
 	}

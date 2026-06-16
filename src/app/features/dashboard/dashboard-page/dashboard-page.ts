@@ -133,7 +133,8 @@ export class DashboardPage implements OnInit {
 
   private async loadProducts(): Promise<ProductView[]> {
     const productsRef = collection(this.firestore, 'products');
-    const snapshot = await getDocs(productsRef);
+    const productsQuery = query(productsRef, where('active', '==', true));
+    const snapshot = await getDocs(productsQuery);
 
     return snapshot.docs
       .map(docSnapshot => {
